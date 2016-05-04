@@ -1,6 +1,6 @@
 var router = require('express').Router();
 var Player = require('../../models/player');
-var update = require('../../models/update');
+var update = require('../../modules/update');
 
 router.get('/', function(req, res) {
   res.sendStatus(200);
@@ -56,7 +56,7 @@ router.get('/stats/:username/overall', function(req, res) {
 });
 
 // Return stats for Conquest game mode
-res.get('/stats/:username/conquest', function(req, res) {
+router.get('/stats/:username/conquest', function(req, res) {
   // Get username from parameter
   var username = req.params.username;
 
@@ -79,7 +79,7 @@ res.get('/stats/:username/conquest', function(req, res) {
 });
 
 // Return stats for Team Death Match game mode
-res.get('/stats/:username/tdm', function(req, res) {
+router.get('/stats/:username/tdm', function(req, res) {
   // Get username from parameter
   var username = req.params.username;
 
@@ -102,7 +102,7 @@ res.get('/stats/:username/tdm', function(req, res) {
 });
 
 // Return stats for Free For All game mode
-res.get('/stats/:username/ffa', function(req, res) {
+router.get('/stats/:username/ffa', function(req, res) {
   // Get username from parameter
   var username = req.params.username;
 
