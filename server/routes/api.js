@@ -1,5 +1,6 @@
 var router = require('express').Router();
 var Player = require('../../models/player');
+var update = require('../../models/update');
 
 router.get('/', function(req, res) {
   res.sendStatus(200);
@@ -129,6 +130,10 @@ res.get('/stats/:username/ffa', function(req, res) {
 *******************************************************************************/
 // Conquest
 router.post('/stats/:username/conquest', function(req, res) {
+  // Get username from parameters
+  var username = req.params.username;
+
+  // Put data from game into object
   var gameData = {
     kills: req.body.kills,
     deaths: req.body.deaths,
@@ -136,7 +141,57 @@ router.post('/stats/:username/conquest', function(req, res) {
     captures: req.body.captures
   }
 
-  
+  // Update stats
+  update.conquest(username, gameData);
+
+  // Send feedback
+  res.status(201).json({
+    success: true,
+    message: 'Conquest stats updated'
+  });
+});
+
+// Team Death Match
+router.post('/stats/:username/tdm', function(req, res) {
+  // Get username from parameters
+  var username = req.params.username;
+
+  // Put data from game into object
+  var gameData = {
+    kills: req.body.kills,
+    deaths: req.body.deaths,
+    won: req.body.won,
+  }
+
+  // Update stats
+  update.tdm(username, gameData);
+
+  // Send feedback
+  res.status(201).json({
+    success: true,
+    message: 'Team Death Match stats updated.'
+  });
+});
+
+// Free For All
+router.post('/stats/:username/ffa', function(req, res) {
+  // Get username from parameters
+  var username = req.params.username;
+
+  // Put data from game into object
+  var gameData = {
+    kills: req.body.kills,
+    deaths: req.body.deaths,
+  }
+
+  // Update stats
+  update.ffa(username, gameData);
+
+  // Send feedback
+  res.status(201).json({
+    success: true,
+    message: 'Free for All stats updated'
+  });
 });
 
 
