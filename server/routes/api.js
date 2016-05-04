@@ -6,7 +6,7 @@ router.get('/', function(req, res) {
 });
 
 /*******************************************************************************
-                                  Stats
+                                  Get Stats
 *******************************************************************************/
 // Return all stats for a player
 router.get('/stats/:username', function(req, res) {
@@ -122,5 +122,22 @@ res.get('/stats/:username/ffa', function(req, res) {
     }
   });
 });
+
+
+/*******************************************************************************
+                                Post Stats
+*******************************************************************************/
+// Conquest
+router.post('/stats/:username/conquest', function(req, res) {
+  var gameData = {
+    kills: req.body.kills,
+    deaths: req.body.deaths,
+    won: req.body.won,
+    captures: req.body.captures
+  }
+
+  
+});
+
 
 module.exports = router;

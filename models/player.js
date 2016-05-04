@@ -20,7 +20,7 @@ var playerSchema = new Schema({
       deaths: Number,
       won: Number,
       lost: Number,
-      objectives: Number,
+      captures: Number,
       gamesPlayed: Number,
     },
     teamDeathMatch: {
