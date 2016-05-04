@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var userSchema = new Schema({
+var playerSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
   picture: { type: String, required: false },
   joined: { type: Date, required: true },
   stats: {
-    global: {
+    overall: {
       rank: Number,
       kills: Number,
       deaths: Number,
@@ -37,6 +37,6 @@ var userSchema = new Schema({
   }
 });
 
-var User = mongoose.model('User', userSchema);
+var Player = mongoose.model('Player', playerSchema);
 
-module.exports = User;
+module.exports = Player;
