@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
+
 var Schema = mongoose.Schema;
+var SALT_WORK_FACTOR = 10;
 
 var playerSchema = new Schema({
   username: { type: String, required: true },
@@ -36,6 +39,46 @@ var playerSchema = new Schema({
     }
   }
 });
+
+// Encrypt token before saving to the database
+playerSchema.pre('save', function(next) {
+  var player = this;
+
+  // If the token was not changed, do not continue
+  if (!user.isModified('password')) {
+    return next();
+  }
+
+  // Create salt for hash
+  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+    if (err) {
+      return next(err);
+    }
+
+    bcrypt.hash(player.password, salt, function(err, hash) {
+      if (err) {
+        return next(err);
+      }
+
+      // Replace clear text with hashed password
+      player.password = hash;
+
+      next();
+    });
+  });
+});
+
+// Compare the proided password against the database
+playerSchema.methods.comparePassword = function(candidatePassword, done) {
+  bcrypt.compare(candidateToken, this.password, function(err, isMatch) {
+    if (err) {
+      return done(err);
+    } else {
+      done(null, isMatch);
+    }
+  });
+};
+
 
 var Player = mongoose.model('Player', playerSchema);
 
