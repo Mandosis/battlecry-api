@@ -1,11 +1,12 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var localStrategy = require('passport-local');
+var localStrategy = require('passport-local').Strategy;
 var bodyParser = require('body-parser');
 var config = require('../modules/config');
 var db = require('../modules/database');
 var router = require('./routes/router');
+var Player = require('../models/player.js');
 
 var app = express();
 
@@ -14,6 +15,58 @@ db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+
+// Passport
+//Passport
+
+passport.use('local', new localStrategy({
+  passReqToCallback: true,
+  usernameField: 'username'
+ },
+  function(request, username, password, done){
+
+    Player.findOne({username: username}, function(err, player){
+      if(err){
+        console.log(err);
+      }
+
+      if(!player){
+        return done(null, false, {message: 'Incorrect username or password'});
+      }
+
+      player.comparePassword(password, function(err, isMatch){
+        if(err){
+          console.log(err);
+        }
+
+        if(isMatch){
+          return done(null, player)
+        } else {
+          return done(null, false, {message: 'Incorrect username or password'})
+        }
+
+      })
+
+    })
+
+  }
+));
+
+passport.serializeUser(function(player, done){
+  done(null, player.id); //Trail of breadcrumbs back to user
+});
+
+passport.deserializeUser(function(id, done){
+  User.findById(id, function(err, player){
+    if(err){
+      done(err);
+    } else {
+      done(null, player);
+    }
+  })
+
+})
 
 // Router
 app.use('/', router);

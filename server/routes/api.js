@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var passport = require('passport');
 var Player = require('../../models/player');
 var update = require('../../modules/update');
 
@@ -22,11 +23,21 @@ router.get('/stats/:username', function(req, res) {
       // Send JSON payload with error message
       res.status(500).json({
         success: false,
-        message: 'No player found'
+        message: 'Error fetching player'
+      });
+    } else if (!player) {
+      // No player found
+      res.status(404).json({
+        success: false,
+        message: 'No player found.'
       });
     } else {
       var stats = player.stats;
-      res.status(200).json(stats);
+      res.status(200).json({
+        success: true,
+        message: 'Player found',
+        data: stats
+      });
     }
   });
 });
@@ -45,6 +56,12 @@ router.get('/stats/:username/overall', function(req, res) {
       res.status(500).json({
         success: false,
         message: 'No player found'
+      });
+    } else if (!player) {
+      // No player found
+      res.status(404).json({
+        success: false,
+        message: 'No player found.'
       });
     } else {
       // Set to overall stats
@@ -72,6 +89,12 @@ router.get('/stats/:username/conquest', function(req, res) {
         success: true,
         message: 'Player not found'
       });
+    } else if (!player) {
+      // No player found
+      res.status(404).json({
+        success: false,
+        message: 'No player found.'
+      });
     } else {
       res.status(200).json(stats);
     }
@@ -95,6 +118,12 @@ router.get('/stats/:username/tdm', function(req, res) {
         success: true,
         message: 'Player not found'
       });
+    } else if (!player) {
+      // No player found
+      res.status(404).json({
+        success: false,
+        message: 'No player found.'
+      });
     } else {
       res.status(200).json(stats);
     }
@@ -117,6 +146,12 @@ router.get('/stats/:username/ffa', function(req, res) {
       res.status(500).json({
         success: true,
         message: 'Player not found'
+      });
+    } else if (!player) {
+      // No player found
+      res.status(404).json({
+        success: false,
+        message: 'No player found.'
       });
     } else {
       res.status(200).json(stats);
@@ -195,8 +230,114 @@ router.post('/stats/:username/ffa', function(req, res) {
 });
 
 /*******************************************************************************
-                           Get User Information
+                        Player Account Information
 *******************************************************************************/
+router.get('/players/:username', function(req, res) {
+  var username = username
+  var playerData = {};
 
+  // Find player in the database
+  Player.findOne({ username: username }, function(err, player) {
+    if (err) {
+      console.log('Error fetching player from database:', err);
+
+      // Response from server
+      res.status(500).json({
+        success: false,
+        message: 'Error fetching player'
+      });
+    } else if (!player) {
+      // Response for no player found in database
+      // Response from server
+      res.status(404).json({
+        success: false,
+        message: 'No player found'
+      });
+    } else {
+      // Set only the profile info.
+      playerData = {
+        username: player.username,
+        picture: player.picture,
+        joined: player.joined
+      }
+      // Respond with player data
+      res.status(200).json({
+        success: true,
+        message: 'Player found.',
+        data: playerData
+      });
+    }
+  });
+});
+
+// Create a new player
+router.post('/players', function(req, res) {
+  // Create player object from the request body
+  var playerData = {
+    username: req.body.username,
+    password: req.body.password,
+    joined: Date.now() // Gets the date when created
+  }
+
+  // Send playerData to the database
+  Player.create(playerData, function(err) {
+    if (err) {
+      console.log('Error creating player:', err);
+      res.status(500).json({
+        success: false,
+        message: 'Error creating player.'
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: 'Player created.'
+      });
+    }
+  });
+});
+
+router.delete('/players/:username', function(req, res) {
+  var username = req.params.username;
+
+  Player.findOne({ username: username }).remove(function(err) {
+    if (err) {
+      console.log('Error deleting user');
+      res.status(500).json({
+        success: false,
+        message: 'Error deleting user.'
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Player deleted.'
+      });
+    }
+  });
+})
+
+/*******************************************************************************
+                              Authentication
+*******************************************************************************/
+router.post('/auth', function(req, res) {
+  passport.authenticate('local', function(err, player) {
+    if (err) {
+      console.log('Error logging in:', err);
+      res.status(500).json({
+        success: false,
+        message: 'Error authenticating user'
+      });
+    } else if (player === false) {
+      res.status(404).json({
+        success: false,
+        message: 'Player not authenticated'
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Player authenticated.'
+      });
+    }
+  })(req, res)
+});
 
 module.exports = router;

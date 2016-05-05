@@ -47,7 +47,7 @@ playerSchema.pre('save', function(next) {
   var player = this;
 
   // If the password was not changed, do not continue
-  if (!user.isModified('password')) {
+  if (!player.isModified('password')) {
     return next();
   }
 
