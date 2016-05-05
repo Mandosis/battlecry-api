@@ -296,6 +296,7 @@ router.post('/players', function(req, res) {
   });
 });
 
+// Delete a player
 router.delete('/players/:username', function(req, res) {
   var username = req.params.username;
 
@@ -313,7 +314,129 @@ router.delete('/players/:username', function(req, res) {
       });
     }
   });
-})
+});
+
+// Update a profile
+router.patch('/players/:username', function(req, res) {
+  var username = req.params.username;
+
+  // Find and update the user
+  Player.findOne({ username: username }, function(err, player) {
+    if (err) {
+      console.log('Error finding player:', err);
+      res.status(500).json({
+        success: false,
+        message: 'Error finding player'
+      })
+    } else if(!player) {
+      res.status(404).json({
+        success: false,
+        message: 'No player found'
+      });
+    } else {
+      // Check for username and add to object if found
+      if(req.body.username) {
+        player.username = req.body.username;
+      }
+
+      // Check for password and add to object if found
+      if(req.body.password) {
+        player.password = req.body.password;
+      }
+
+      // Check for profile picture and add to object if found
+      if(req.body.picture) {
+        player.picture = req.body.picture;
+      }
+
+      player.save(function(err) {
+        if(err) {
+          console.log('Error saving user to database');
+          res.status(500).json({
+            success: false,
+            message: 'Error saving player'
+          });
+        } else {
+          res.status(201).json({
+            success: true,
+            message: 'Player profile updated.'
+          });
+        }
+      });
+    }
+  });
+});
+
+// Ban a player
+router.patch('/players/:username/ban', function(req, res) {
+  var username = req.params.username;
+  var playerData = {
+    banned: true
+  }
+
+  Player.findOneAndUpdate({ username: username }, playerData, function(err) {
+    if (err) {
+      console.log('Error banning player');
+      res.status(500).json({
+        success: false,
+        message: 'Error occured while attempting to ban player'
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: 'Player banned.'
+      });
+    }
+  });
+});
+
+// Unban a player
+router.patch('/players/:username/unban', function(req, res) {
+  var username = req.params.username;
+  var playerData = {
+    banned: false
+  }
+
+  Player.findOneAndUpdate({ username: username }, playerData, function(err) {
+    if (err) {
+      console.log('Error unbanning player');
+      res.status(500).json({
+        success: false,
+        message: 'Error occured while attempting to unban player'
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: 'Player unbanned.'
+      });
+    }
+  });
+});
+
+// Give player developer permissions
+router.patch('/players/:username/developer', function(req, res) {
+  var username = req.params.username;
+  var playerData = {
+    developer: true
+  }
+
+  Player.findOneAndUpdate({ username: username }, playerData, function(err) {
+    if (err) {
+      console.log('Error making player a developer');
+      res.status(500).json({
+        success: false,
+        message: 'Error occured while attempting to give player developer permissions'
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: 'Granted developer permissoins.'
+      });
+    }
+  });
+});
+
+
 
 /*******************************************************************************
                               Authentication

@@ -10,6 +10,7 @@ var playerSchema = new Schema({
   picture: { type: String, required: false },
   admin: { type: Boolean, required: true, default: false },
   developer: { type: Boolean, required: true, default: false },
+  banned: { type: Boolean, required: true, default: false },
   joined: { type: Date, required: true },
   stats: {
     overall: {
