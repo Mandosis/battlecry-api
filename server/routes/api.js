@@ -463,4 +463,49 @@ router.post('/auth', function(req, res) {
   })(req, res)
 });
 
+// Compare password for web app authentication
+router.get('/auth/:username/:password', function(req, res) {
+  var username = req.params.username;
+  var password = req.params.password;
+
+  // Search for player in database
+  Player.findOne({ username: username }, function(err, player) {
+    if (err) {
+      console.log('Error fetching user from database:', err);
+      res.status(500).json({
+        success: false,
+        message: 'Internal Error'
+      })
+    } else if (!player) { // Checks to see if player object is empty
+      res.status(404).json({
+        success: false,
+        message: 'Player not found'
+      });
+    } else {
+      // Compare password
+      player.comparePassword(password, function(err, isMatch) {
+        if (err) {
+          console.log('Error comparing passwords:', err);
+          res.status(500).json({
+            success: false,
+            message: 'Internal error.'
+          });
+        }
+
+        if (isMatch) {
+          res.status(200).json({
+            success: true,
+            message: 'Passwords match.'
+          });
+        } else {
+          res.status(200).json({
+            success: false,
+            message: 'Passwords are different.'
+          });
+        }
+      });
+    }
+  });
+});
+
 module.exports = router;
