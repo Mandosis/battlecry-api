@@ -18,8 +18,6 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 // Passport
-//Passport
-
 passport.use('local', new localStrategy({
   passReqToCallback: true,
   usernameField: 'username'

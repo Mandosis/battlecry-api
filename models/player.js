@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var SALT_WORK_FACTOR = 10;
 
 var playerSchema = new Schema({
-  username: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   picture: { type: String, required: false },
   admin: { type: Boolean, required: true, default: false },
