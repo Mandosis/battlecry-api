@@ -12,6 +12,7 @@ var app = express();
 // Open connection to database
 db.connect();
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Router

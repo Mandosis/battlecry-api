@@ -8,6 +8,8 @@ var playerSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
   picture: { type: String, required: false },
+  admin: { type: Boolean, required: true, default: false },
+  developer: { type: Boolean, required: true, default: false },
   joined: { type: Date, required: true },
   stats: {
     overall: {
@@ -40,11 +42,11 @@ var playerSchema = new Schema({
   }
 });
 
-// Encrypt token before saving to the database
+// Encrypt password before saving to the database
 playerSchema.pre('save', function(next) {
   var player = this;
 
-  // If the token was not changed, do not continue
+  // If the password was not changed, do not continue
   if (!user.isModified('password')) {
     return next();
   }
@@ -70,7 +72,7 @@ playerSchema.pre('save', function(next) {
 
 // Compare the proided password against the database
 playerSchema.methods.comparePassword = function(candidatePassword, done) {
-  bcrypt.compare(candidateToken, this.password, function(err, isMatch) {
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) {
       return done(err);
     } else {
