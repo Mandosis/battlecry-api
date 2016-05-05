@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var morgan = require('morgan');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var bodyParser = require('body-parser');
@@ -13,6 +14,7 @@ var app = express();
 // Open connection to database
 db.connect();
 
+app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
