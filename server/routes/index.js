@@ -18,16 +18,21 @@ router.post('/token', function(req, res) {
         message: 'Error authenticating user'
       });
     } else if(!user) {
-      res.status(200).json({
+      res.status(401).json({
         success: false,
         message: 'User not authenticated'
       });
+    } else if(!user.developer) {
+      res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      })
     } else {
       var token = jwt.sign(user, config.secret, { expiresIn: 600000 });
       res.status(200).json({
         success: true,
         message: 'Token generated',
-        data: token
+        token: token
       })
     }
   })(req, res);
