@@ -14,31 +14,32 @@ var playerSchema = new Schema({
   joined: { type: Date, required: true },
   stats: {
     overall: {
-      rank: Number,
-      kills: Number,
-      deaths: Number,
-      won: Number,
-      lost: Number,
-      gamesPlayed: Number,
+      rank: {type: Number, default: 0},
+      kills: {type: Number, default: 0},
+      deaths: {type: Number, default: 0},
+      won: {type: Number, default: 0},
+      lost: {type: Number, default: 0},
+      gamesPlayed: {type: Number, default: 0},
     },
     conquest: {
-      kills: Number,
-      deaths: Number,
-      won: Number,
-      lost: Number,
-      captures: Number,
-      gamesPlayed: Number,
+      kills: {type: Number, default: 0},
+      deaths: {type: Number, default: 0},
+      won: {type: Number, default: 0},
+      lost: {type: Number, default: 0},
+      captures: {type: Number, default: 0},
+      gamesPlayed: {type: Number, default: 0},
     },
     teamDeathMatch: {
-      kills: Number,
-      deaths: Number,
-      won: Number,
-      lost: Number,
-      gamesPlayed: Number
+      kills: {type: Number, default: 0},
+      deaths: {type: Number, default: 0},
+      won: {type: Number, default: 0},
+      lost: {type: Number, default: 0},
+      gamesPlayed: {type: Number, default: 0}
     },
     freeForAll: {
-      kills: Number,
-      deaths: Number
+      kills: {type: Number, default: 0},
+      deaths: {type: Number, default: 0},
+      gamesPlayed: {type: Number, default: 0}
     }
   }
 });
@@ -71,7 +72,7 @@ playerSchema.pre('save', function(next) {
   });
 });
 
-// Compare the proided password against the database
+// Compare the provided password against the database
 playerSchema.methods.comparePassword = function(candidatePassword, done) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) {

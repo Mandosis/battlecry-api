@@ -177,12 +177,11 @@ router.post('/stats/:username/conquest', function(req, res) {
   }
 
   // Update stats
-  update.conquest(username, gameData);
-
-  // Send feedback
-  res.status(201).json({
-    success: true,
-    message: 'Conquest stats updated'
+  update.conquest(username, gameData, function(status) {
+    res.status(status).json({
+      success: update.success(status),
+      message: update.message(status)
+    })
   });
 });
 
@@ -199,12 +198,11 @@ router.post('/stats/:username/tdm', function(req, res) {
   }
 
   // Update stats
-  update.tdm(username, gameData);
-
-  // Send feedback
-  res.status(201).json({
-    success: true,
-    message: 'Team Death Match stats updated.'
+  var status = update.tdm(username, gameData, function(status){
+    res.status(status).json({
+      success: update.success(status),
+      message: update.message(status)
+    });
   });
 });
 
@@ -220,13 +218,12 @@ router.post('/stats/:username/ffa', function(req, res) {
   }
 
   // Update stats
-  update.ffa(username, gameData);
-
-  // Send feedback
-  res.status(201).json({
-    success: true,
-    message: 'Free for All stats updated'
-  });
+  update.ffa(username, gameData, function(status) {
+    res.status(status).json({
+      success: update.success(status),
+      message: update.message(status)
+    })
+  })
 });
 
 /*******************************************************************************
