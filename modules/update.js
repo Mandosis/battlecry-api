@@ -4,7 +4,7 @@ module.exports = {
   overall: function(username, done) {
 
     // Search for player
-    Player.findOne({ username: username }, function(err, player) {
+    Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
       if (err) {
         console.log('Error finding player:', err);
         done(500);
@@ -56,7 +56,7 @@ module.exports = {
     var update = this;
 
     // Search for player in the database and get stats
-    Player.findOne({ username: username }, function(err, player) {
+    Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
 
       // Check for errors
       if (err) {
@@ -99,7 +99,7 @@ module.exports = {
     var update = this;
 
     // Search for player in the database and get stats
-    Player.findOne({ username: username }, function(err, player) {
+    Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
 
       // Check for errors
       if (err) {
@@ -141,7 +141,7 @@ module.exports = {
     var update = this;
 
     // Search for player in the database and get stats
-    Player.findOne({ username: username }, function(err, player) {
+    Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
 
       // Check for errors
       if (err) {

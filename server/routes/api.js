@@ -16,7 +16,7 @@ router.get('/stats/:username', function(req, res) {
   var username = req.params.username;
 
   // Search for player in the database by username
-  Player.findOne({ username: username }, function(err, player) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
     if (err) {
       console.log('Error fetching information for', username, 'from database:', err);
 
@@ -48,7 +48,7 @@ router.get('/stats/:username/overall', function(req, res) {
   var username = req.params.username;
 
   // Search for a player matching the provided username
-  Player.findOne({ username: username }, function(err, player) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
     // Check for errors
     if (err) {
       console.log('Error fetching player information:', err);
@@ -78,7 +78,7 @@ router.get('/stats/:username/conquest', function(req, res) {
   var username = req.params.username;
 
   // Search for user in database
-  Player.findOne({ username: username }, function(err, player) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
     var stats = player.stats.conquest;
 
     // Check for errors
@@ -107,7 +107,7 @@ router.get('/stats/:username/tdm', function(req, res) {
   var username = req.params.username;
 
   // Search for user in database
-  Player.findOne({ username: username }, function(err, player) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
     var stats = player.stats.teamDeathMatch;
 
     // Check for errors
@@ -136,7 +136,7 @@ router.get('/stats/:username/ffa', function(req, res) {
   var username = req.params.username;
 
   // Search for user in database
-  Player.findOne({ username: username }, function(err, player) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
     var stats = player.stats.freeForAll;
 
     // Check for errors
@@ -234,8 +234,8 @@ router.get('/players/:username', function(req, res) {
   var playerData = {};
 
   // Find player in the database
-  Player.findOne({ username: username }, function(err, player) {
-    console.log(username);
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
+    console.log(player);
     if (err) {
       console.log('Error fetching player from database:', err);
 
@@ -303,7 +303,7 @@ router.post('/players', function(req, res) {
 router.delete('/players/:username', function(req, res) {
   var username = req.params.username;
 
-  Player.findOne({ username: username }).remove(function(err) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }).remove(function(err) {
     if (err) {
       console.log('Error deleting user');
       res.status(500).json({
@@ -324,7 +324,7 @@ router.patch('/players/:username', function(req, res) {
   var username = req.params.username;
 
   // Find and update the user
-  Player.findOne({ username: username }, function(err, player) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
     if (err) {
       console.log('Error finding player:', err);
       res.status(500).json({
@@ -357,7 +357,7 @@ router.patch('/players/:username', function(req, res) {
           console.log('Error saving user to database');
           res.status(500).json({
             success: false,
-            message: 'Error saving player'
+            message: 'Internal error.'
           });
         } else {
           res.status(201).json({
@@ -377,7 +377,7 @@ router.patch('/players/:username/ban', function(req, res) {
     banned: true
   }
 
-  Player.findOneAndUpdate({ username: username }, playerData, function(err) {
+  Player.findOneAndUpdate({ username: new RegExp('^'+username+'$', "i") }, playerData, function(err) {
     if (err) {
       console.log('Error banning player');
       res.status(500).json({
@@ -400,7 +400,7 @@ router.patch('/players/:username/unban', function(req, res) {
     banned: false
   }
 
-  Player.findOneAndUpdate({ username: username }, playerData, function(err) {
+  Player.findOneAndUpdate({ username: new RegExp('^'+username+'$', "i") }, playerData, function(err) {
     if (err) {
       console.log('Error unbanning player');
       res.status(500).json({
@@ -423,7 +423,7 @@ router.patch('/players/:username/developer', function(req, res) {
     developer: true
   }
 
-  Player.findOneAndUpdate({ username: username }, playerData, function(err) {
+  Player.findOneAndUpdate({ username: new RegExp('^'+username+'$', "i") }, playerData, function(err) {
     if (err) {
       console.log('Error making player a developer');
       res.status(500).json({
@@ -472,7 +472,7 @@ router.get('/auth/:username/:password', function(req, res) {
   var password = req.params.password;
 
   // Search for player in database
-  Player.findOne({ username: username }, function(err, player) {
+  Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
     if (err) {
       console.log('Error fetching user from database:', err);
       res.status(500).json({
