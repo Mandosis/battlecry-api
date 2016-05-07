@@ -230,18 +230,19 @@ router.post('/stats/:username/ffa', function(req, res) {
                         Player Account Information
 *******************************************************************************/
 router.get('/players/:username', function(req, res) {
-  var username = username
+  var username = req.params.username;
   var playerData = {};
 
   // Find player in the database
   Player.findOne({ username: username }, function(err, player) {
+    console.log(username);
     if (err) {
       console.log('Error fetching player from database:', err);
 
       // Response from server
       res.status(500).json({
         success: false,
-        message: 'Error fetching player'
+        message: 'Internal error.'
       });
     } else if (!player) {
       // Response for no player found in database
@@ -278,7 +279,12 @@ router.post('/players', function(req, res) {
 
   // Send playerData to the database
   Player.create(playerData, function(err) {
-    if (err) {
+    if (err.errors.username) {
+      res.status(409).json({
+        success: false,
+        message: 'Username taken.'
+      });
+    } else if (err) {
       console.log('Error creating player:', err);
       res.status(500).json({
         success: false,
@@ -323,7 +329,7 @@ router.patch('/players/:username', function(req, res) {
       console.log('Error finding player:', err);
       res.status(500).json({
         success: false,
-        message: 'Error finding player'
+        message: 'Internal Error'
       })
     } else if(!player) {
       res.status(404).json({

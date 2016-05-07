@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 var bcrypt = require('bcrypt');
 
 var Schema = mongoose.Schema;
 var SALT_WORK_FACTOR = 10;
 
 var playerSchema = new Schema({
-  username: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true, uniqueCaseInsensitive: true },
   password: { type: String, required: true },
   picture: { type: String, required: false },
   admin: { type: Boolean, required: true, default: false },
@@ -43,6 +44,8 @@ var playerSchema = new Schema({
     }
   }
 });
+
+playerSchema.plugin(uniqueValidator);
 
 // Encrypt password before saving to the database
 playerSchema.pre('save', function(next) {
