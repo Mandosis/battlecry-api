@@ -467,9 +467,9 @@ router.post('/auth', function(req, res) {
 });
 
 // Compare password for web app authentication
-router.get('/auth/:username/:password', function(req, res) {
-  var username = req.params.username;
-  var password = req.params.password;
+router.post('/auth/site', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
 
   // Search for player in database
   Player.findOne({ username: new RegExp('^'+username+'$', "i") }, function(err, player) {
@@ -498,7 +498,15 @@ router.get('/auth/:username/:password', function(req, res) {
         if (isMatch) {
           res.status(200).json({
             success: true,
-            message: 'Passwords match.'
+            message: 'Passwords match.',
+            data: {
+              id: player._id,
+              username: player.username,
+              picture: player.picture,
+              joined: player.joined,
+              developer: player.developer,
+              admin: player.admin
+            }
           });
         } else {
           res.status(200).json({
@@ -511,4 +519,35 @@ router.get('/auth/:username/:password', function(req, res) {
   });
 });
 
+// Return data on user for deserializing on the website application
+router.post('/auth/site/deserialize', function(req, res) {
+  var id = req.body.id;
+
+  Player.findById(id, function(err, player) {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: 'Internal error.'
+      });
+    } else if (!player) {
+      res.status(404).json({
+        success: false,
+        message: 'No player found.'
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Player found.',
+        data: {
+          id: player._id,
+          username: player.username,
+          picture: player.picture,
+          joined: player.joined,
+          developer: player.developer,
+          admin: player.admin
+        }
+      });
+    }
+  });
+});
 module.exports = router;

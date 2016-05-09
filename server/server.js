@@ -26,7 +26,7 @@ passport.use('local', new localStrategy({
  },
   function(request, username, password, done){
 
-    Player.findOne({username: username}, function(err, player){
+    Player.findOne({username: new RegExp('^'+username+'$', "i")}, function(err, player){
       if(err){
         console.log(err);
       }
