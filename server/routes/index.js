@@ -28,7 +28,7 @@ router.post('/token', function(req, res) {
         message: 'Unauthorized'
       })
     } else {
-      var token = jwt.sign(user, config.secret, { algorithm: 'HS256', expiresIn: 600000 });
+      var token = jwt.sign(user, config.secret, { algorithm: 'HS256' });
       res.status(200).json({
         success: true,
         message: 'Token generated',

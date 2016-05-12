@@ -115,16 +115,16 @@ module.exports = {
         player.stats.teamDeathMatch.gamesPlayed += 1;
 
         // Check if the game was won and update the won/lost count
-        if (gameData.won) {
+        if (gameData.won == true) {
           player.stats.teamDeathMatch.won += 1;
         } else {
-          player.stats.teamDeathMatch.lost -= 1;
+          player.stats.teamDeathMatch.lost += 1;
         }
 
         // Save the updated stats to the database
         player.save(function(err) {
           if (err) {
-            console.log('error saving plauer:', err);
+            console.log('error saving player:', err);
             done(500);
           } else {
             // Update the overall stats

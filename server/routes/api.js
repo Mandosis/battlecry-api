@@ -268,6 +268,26 @@ router.get('/players/:username', function(req, res) {
   });
 });
 
+// Return all players
+router.get('/players', function(req, res) {
+
+  // Fetch all users from the database
+  Player.find({}, function(err, players) {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: 'Internal error.'
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Players found.',
+        data: players
+      });
+    }
+  });
+});
+
 // Create a new player
 router.post('/players', function(req, res) {
   // Create player object from the request body
