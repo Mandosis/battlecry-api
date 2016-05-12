@@ -73,7 +73,7 @@ module.exports = {
         player.stats.conquest.gamesPlayed += 1;
 
         // Check if the game was won and update the won/lost count
-        if (gameData.won) {
+        if (gameData.won == true) {
           player.stats.conquest.won += 1;
         } else {
           player.stats.conquest.lost -= 1;
