@@ -76,7 +76,7 @@ module.exports = {
         if (gameData.won == true) {
           player.stats.conquest.won += 1;
         } else {
-          player.stats.conquest.lost -= 1;
+          player.stats.conquest.lost += 1;
         }
 
         // Save the updated stats to the database
